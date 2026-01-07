@@ -1,0 +1,36 @@
+import { ObjectId } from 'mongoose';
+
+export type TSubmitListing = {
+  companyId: ObjectId;
+  userId: ObjectId;
+  carCategory: string;
+  mark: string;
+  model: string;
+  cashPrice: number;
+  priceType: string[];
+  carCondition: string;
+  models: string;
+  fuel: string[];
+  gearType: string[];
+  drivenKmFrom: number;
+  drivenKmTo: number;
+  modelsFrom: number;
+  modelsTo: number;
+  color: string[];
+  trailerHitch: string;
+  exterior: string[];
+  interior: string[];
+  firstName: string;
+  lastName: string;
+  postalCode: string;
+  city: string;
+  street: string;
+  phoneNumber: string;
+  companyName: string;
+  cvrNumber: string;
+  companyPostalCode: string;
+  companyCity: string;
+  companyPhoneNumber: string;
+  isOffer: boolean;
+  brandImage: string;
+};
