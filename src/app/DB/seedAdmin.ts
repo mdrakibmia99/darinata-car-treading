@@ -7,6 +7,7 @@ import Profile from '../modules/profile/profile.model';
 import User from '../modules/user/user.model';
 import AppError from '../utils/AppError';
 import generateUID from '../utils/generateUid';
+import { setAdminData } from './adminStore';
 
 const seedAdmin = async () => {
   // if admin is not exist
@@ -52,6 +53,7 @@ const seedAdmin = async () => {
       if (!updateUser) {
         throw new AppError(httpStatus.BAD_REQUEST, 'User not updated');
       }
+      setAdminData(updateUser);
 
       await session.commitTransaction();
       session.endSession();
@@ -61,6 +63,8 @@ const seedAdmin = async () => {
       session.endSession();
       throw error;
     }
+  }else{
+    setAdminData(isAdminExist);
   }
 };
 

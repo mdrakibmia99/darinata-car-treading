@@ -6,7 +6,7 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/nof-found';
 import router from './app/router';
-import { getAdminData } from './app/DB/adminStore';
+import { getAdminData, getAdminId } from './app/DB/adminStore';
 
 const app: Application = express();
 app.use('/public', express.static('public'));
@@ -32,12 +32,19 @@ app.use('/api/v1', router);
 
 // Default Route
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  const adminData= getAdminData()
+
   res.json({
-    message: 'Welcome To Server',
-    adminData
+    message: 'Welcome To Server'
   });
 });
+app.get('/test', (req: Request, res: Response, next: NextFunction) => {
+    const adminData= getAdminData()
+    const adminId=getAdminId()
+  res.json({
+    adminId,
+    adminData
+  });
+})
 
 // Not Found Middleware
 app.use(notFound);
