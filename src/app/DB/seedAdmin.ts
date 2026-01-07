@@ -19,7 +19,7 @@ const seedAdmin = async () => {
   };
 
   const isAdminExist = await User.findOne({ role: USER_ROLE.admin });
-  console.log(isAdminExist,'isAdminExist');
+  console.log(isAdminExist,admin,'isAdminExist');
   if (!isAdminExist) {
     const session = await mongoose.startSession();
     try {

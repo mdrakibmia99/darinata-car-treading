@@ -232,9 +232,8 @@ const verifyEmail = async (token: string, otp: { otp: number }) => {
 
 const loginUser = async (payload: Pick<IUser, 'email' | 'password'>) => {
   const { email, password } = payload;
-
   const user = await User.findOne({ email }).select('+password');
-
+  console.log(user,"check user");
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
   }
@@ -253,8 +252,9 @@ const loginUser = async (payload: Pick<IUser, 'email' | 'password'>) => {
   }
 
   //  await isMatchedPassword(password, user?.password);
-
+  console.log(password, user?.password,'password, user?.password')
   const matchPassword = await User.isMatchedPassword(password, user?.password);
+  console.log(matchPassword,'matchPassword')
 
   if (!matchPassword) {
     throw new AppError(httpStatus.FORBIDDEN, 'password not matched');
