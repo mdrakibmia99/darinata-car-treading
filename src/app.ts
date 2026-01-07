@@ -6,7 +6,6 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/nof-found';
 import router from './app/router';
-import { getAdminData, getAdminId } from './app/DB/adminStore';
 import User from './app/modules/user/user.model';
 import { USER_ROLE } from './app/constant';
 
@@ -39,13 +38,15 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
     message: 'Welcome To Server'
   });
 });
-app.get('/remove-admin', async (req: Request, res: Response, next: NextFunction) => {
+
+app.get('/test', async (req: Request, res: Response, next: NextFunction) => {
 
   const removeAdmin = await User.findOneAndDelete({ role: USER_ROLE.admin })
   res.json({
     removeAdmin
   });
 })
+
 
 // Not Found Middleware
 app.use(notFound);
