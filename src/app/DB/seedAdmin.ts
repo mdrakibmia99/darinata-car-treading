@@ -1,4 +1,3 @@
-import colors from 'colors';
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import config from '../../config';
@@ -19,7 +18,6 @@ const seedAdmin = async () => {
   };
 
   const isAdminExist = await User.findOne({ role: USER_ROLE.admin });
-  console.log(isAdminExist,admin,'isAdminExist');
   if (!isAdminExist) {
     const session = await mongoose.startSession();
     try {
@@ -57,7 +55,6 @@ const seedAdmin = async () => {
 
       await session.commitTransaction();
       session.endSession();
-      console.log(colors.green(`Admin created successfully`).bold);
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
