@@ -47,7 +47,7 @@ async function main() {
     socketIO(IO);
     globalThis.io = IO; // Store io in global for access throughout your app
     seedAdmin();
-    console.log('admin check')
+    console.log('admin check!')
   } catch (err) {
     console.error('Error starting the server:', err);
     process.exit(1); // Exit after error
