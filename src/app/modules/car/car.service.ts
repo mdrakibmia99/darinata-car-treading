@@ -283,10 +283,17 @@ const getCarList = async (query: Record<string, unknown>) => {
 
     return matches;
   });
+const pagination= {
+    total: filterCar.length,                       // filtered array count
+    totalPage: Math.ceil(filterCar.length / (Number(query.limit) || 10)),
+    page: Number(query.page) || 1,
+    limit: Number(query.limit) || 10,
+  }
 
-  const pagination = await carAggregation.countTotal(Car);
 
-  return { pagination, result: filterCar ? filterCar : result };
+  return {
+    pagination, result: filterCar || []
+  };
 };
 
 const buyCar = async (payload: any, user: TAuthUser) => {
@@ -834,7 +841,7 @@ const getBrand = async () => {
   return await BrandModel.find({});
 };
 
-const deleteBrand  = async (brandId: string) => {
+const deleteBrand = async (brandId: string) => {
   return await BrandModel.findByIdAndDelete(brandId);
 };
 
