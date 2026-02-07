@@ -38,7 +38,7 @@ const getCarList = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: 200,
-    message: 'Car listed successfully',
+    message: 'get Car listed successfully',
     data: result,
   });
 });
