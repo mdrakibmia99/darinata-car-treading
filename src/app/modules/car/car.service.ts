@@ -296,26 +296,35 @@ const carListing = async (payload: any) => {
 //   };
 // };
 
-
+const exactRegex = (value: string) => ({
+  $regex: `^${value.trim()}$`,
+  $options: 'i',
+});
 const getCarList = async (query: Record<string, any>) => {
   const {
+    page = 1,
+    limit = 10,
     modelYearFrom,
     modelYearTo,
     drivenKmFrom,
     drivenKmTo,
-    page = 1,
-    limit = 10,
+    'carModel.brand': brand,
+    'carModel.fuelType': fuelType,
   } = query;
 
-  const matchStage: any = { isSell: false };
+  /* ---------------- BASE MATCH ---------------- */
+  const matchStage: any = {
+    isSell: false,
+  };
 
+  // driven km filter
   if (drivenKmFrom || drivenKmTo) {
     matchStage.noOfKmDriven = {};
     if (drivenKmFrom) matchStage.noOfKmDriven.$gte = Number(drivenKmFrom);
     if (drivenKmTo) matchStage.noOfKmDriven.$lte = Number(drivenKmTo);
   }
 
-  const basePipeline: any[] = [
+  const pipeline: any[] = [
     { $match: matchStage },
 
     {
@@ -327,18 +336,39 @@ const getCarList = async (query: Record<string, any>) => {
       },
     },
     { $unwind: '$carModel' },
+  ];
 
-    ...(modelYearFrom || modelYearTo
-      ? [{
-          $match: {
-            'carModel.modelYear': {
-              ...(modelYearFrom && { $gte: Number(modelYearFrom) }),
-              ...(modelYearTo && { $lte: Number(modelYearTo) }),
-            },
-          },
-        }]
-      : []),
+  /* ---------------- STRING FILTER (EXACT) ---------------- */
+  if (brand && brand.trim()) {
+    pipeline.push({
+      $match: {
+        'carModel.brand': exactRegex(brand),
+      },
+    });
+  }
 
+  if (fuelType && fuelType.trim()) {
+    pipeline.push({
+      $match: {
+        'carModel.fuelType': exactRegex(fuelType),
+      },
+    });
+  }
+
+  /* ---------------- MODEL YEAR FILTER ---------------- */
+  if (modelYearFrom || modelYearTo) {
+    pipeline.push({
+      $match: {
+        'carModel.modelYear': {
+          ...(modelYearFrom && { $gte: Number(modelYearFrom) }),
+          ...(modelYearTo && { $lte: Number(modelYearTo) }),
+        },
+      },
+    });
+  }
+
+  /* ---------------- LOOKUPS ---------------- */
+  pipeline.push(
     {
       $lookup: {
         from: 'companies',
@@ -376,27 +406,26 @@ const getCarList = async (query: Record<string, any>) => {
         as: 'bidsCount',
       },
     },
-
     {
       $addFields: {
         totalBidCount: {
           $ifNull: [{ $arrayElemAt: ['$bidsCount.totalBids', 0] }, 0],
         },
       },
-    },
-  ];
+    }
+  );
 
-  /* ---------- RESULT ---------- */
+  /* ---------------- RESULT ---------------- */
   const result = await Car.aggregate([
-    ...basePipeline,
+    ...pipeline,
     { $sort: { createdAt: -1 } },
     { $skip: (Number(page) - 1) * Number(limit) },
     { $limit: Number(limit) },
   ]);
 
-  /* ---------- TOTAL COUNT ---------- */
+  /* ---------------- COUNT ---------------- */
   const totalAgg = await Car.aggregate([
-    ...basePipeline,
+    ...pipeline,
     { $count: 'total' },
   ]);
 
