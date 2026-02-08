@@ -152,150 +152,266 @@ const carListing = async (payload: any) => {
     throw new AppError(httpStatus.BAD_REQUEST, error);
   }
 };
+//  old car listing
+// const getCarList = async (query: Record<string, unknown>) => {
+//   const { modelYearFrom, modelYearTo, drivenKmFrom, drivenKmTo } = query;
 
-const getCarList = async (query: Record<string, unknown>) => {
-  const { modelYearFrom, modelYearTo, drivenKmFrom, drivenKmTo } = query;
+//   const carAggregation = new AggregationQueryBuilder(query);
 
-  const carAggregation = new AggregationQueryBuilder(query);
+//   const result = await carAggregation
+//     .customPipeline([
+//       {
+//         $match: {
+//           isSell: false,
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: 'carmodels',
+//           localField: 'carModelId',
+//           foreignField: '_id',
+//           as: 'carModel',
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: '$carModel',
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: 'companies',
+//           localField: 'companyId',
+//           foreignField: '_id',
+//           as: 'company',
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: '$company',
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: 'bids',
+//           localField: '_id',
+//           foreignField: 'carId',
+//           as: 'bids',
+//           pipeline: [{ $sort: { bidAmount: -1 } }, { $limit: 1 }],
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: '$bids',
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: 'bids',
+//           let: { carId: '$_id' },
+//           pipeline: [
+//             { $match: { $expr: { $eq: ['$carId', '$$carId'] } } },
+//             { $count: 'totalBids' },
+//           ],
+//           as: 'bidsCount',
+//         },
+//       },
+//       {
+//         $addFields: {
+//           totalBidCount: {
+//             $ifNull: [{ $arrayElemAt: ['$bidsCount.totalBids', 0] }, 0],
+//           },
+//         },
+//       },
+//       {
+//         $project: {
+//           _id: 1,
+//           carOwner: 1,
+//           carModelId: 1,
+//           companyId: 1,
+//           noOfKmDriven: 1,
+//           noOfVarnishField: 1,
+//           additionalEquipment: 1,
+//           condition: 1,
+//           comment: 1,
+//           expectedPrice: 1,
+//           registrationNumber: 1,
+//           vat: 1,
+//           carCategory: 1,
+//           milage: 1,
+//           firstRegistrationDate: 1,
+//           chassisNumber: 1,
+//           tax: 1,
+//           inspectionDate: 1,
+//           createdAt: 1,
+//           updatedAt: 1,
+//           isSell: 1,
+//           maxBidAmount: '$bids.bidAmount',
+//           carModel: 1,
+//           company: 1,
+//           totalBidCount: 1,
+//         },
+//       },
+//     ])
+//     .filter(['carModel.brand', 'carModel.fuelType'])
+//     .rangeFilter(['carModel.modelYear'])
+//     .sort()
+//     .paginate()
+//     .execute(Car);
 
-  const result = await carAggregation
-    .customPipeline([
-      {
-        $match: {
-          isSell: false,
-        },
-      },
-      {
-        $lookup: {
-          from: 'carmodels',
-          localField: 'carModelId',
-          foreignField: '_id',
-          as: 'carModel',
-        },
-      },
-      {
-        $unwind: {
-          path: '$carModel',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: 'companies',
-          localField: 'companyId',
-          foreignField: '_id',
-          as: 'company',
-        },
-      },
-      {
-        $unwind: {
-          path: '$company',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: 'bids',
-          localField: '_id',
-          foreignField: 'carId',
-          as: 'bids',
-          pipeline: [{ $sort: { bidAmount: -1 } }, { $limit: 1 }],
-        },
-      },
-      {
-        $unwind: {
-          path: '$bids',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: 'bids',
-          let: { carId: '$_id' },
-          pipeline: [
-            { $match: { $expr: { $eq: ['$carId', '$$carId'] } } },
-            { $count: 'totalBids' },
-          ],
-          as: 'bidsCount',
-        },
-      },
-      {
-        $addFields: {
-          totalBidCount: {
-            $ifNull: [{ $arrayElemAt: ['$bidsCount.totalBids', 0] }, 0],
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          carOwner: 1,
-          carModelId: 1,
-          companyId: 1,
-          noOfKmDriven: 1,
-          noOfVarnishField: 1,
-          additionalEquipment: 1,
-          condition: 1,
-          comment: 1,
-          expectedPrice: 1,
-          registrationNumber: 1,
-          vat: 1,
-          carCategory: 1,
-          milage: 1,
-          firstRegistrationDate: 1,
-          chassisNumber: 1,
-          tax: 1,
-          inspectionDate: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          isSell: 1,
-          maxBidAmount: '$bids.bidAmount',
-          carModel: 1,
-          company: 1,
-          totalBidCount: 1,
-        },
-      },
-    ])
-    .filter(['carModel.brand', 'carModel.fuelType'])
-    .rangeFilter(['carModel.modelYear'])
-    .sort()
-    .paginate()
-    .execute(Car);
+//   const filterCar = result.filter((car: any) => {
+//     let matches = true;
 
-  const filterCar = result.filter((car: any) => {
-    let matches = true;
+//     // Check model year filter
+//     if (modelYearFrom && modelYearTo) {
+//       matches =
+//         matches &&
+//         car.carModel.modelYear >= modelYearFrom &&
+//         car.carModel.modelYear <= modelYearTo;
+//     }
 
-    // Check model year filter
-    if (modelYearFrom && modelYearTo) {
-      matches =
-        matches &&
-        car.carModel.modelYear >= modelYearFrom &&
-        car.carModel.modelYear <= modelYearTo;
-    }
+//     // Check driven km filter
+//     if (drivenKmFrom && drivenKmTo) {
+//       matches =
+//         matches &&
+//         car.noOfKmDriven >= drivenKmFrom &&
+//         car.noOfKmDriven <= drivenKmTo;
+//     }
 
-    // Check driven km filter
-    if (drivenKmFrom && drivenKmTo) {
-      matches =
-        matches &&
-        car.noOfKmDriven >= drivenKmFrom &&
-        car.noOfKmDriven <= drivenKmTo;
-    }
+//     return matches;
+//   });
+// const pagination= {
+//     total: filterCar.length,                       // filtered array count
+//     totalPage: Math.ceil(filterCar.length / (Number(query.limit) || 10)),
+//     page: Number(query.page) || 1,
+//     limit: Number(query.limit) || 10,
+//   }
 
-    return matches;
-  });
-const pagination= {
-    total: filterCar.length,                       // filtered array count
-    totalPage: Math.ceil(filterCar.length / (Number(query.limit) || 10)),
-    page: Number(query.page) || 1,
-    limit: Number(query.limit) || 10,
+
+//   return {
+//     pagination, result: filterCar || []
+//   };
+// };
+
+
+const getCarList = async (query: Record<string, any>) => {
+  const {
+    modelYearFrom,
+    modelYearTo,
+    drivenKmFrom,
+    drivenKmTo,
+    page = 1,
+    limit = 10,
+  } = query;
+
+  const matchStage: any = { isSell: false };
+
+  if (drivenKmFrom || drivenKmTo) {
+    matchStage.noOfKmDriven = {};
+    if (drivenKmFrom) matchStage.noOfKmDriven.$gte = Number(drivenKmFrom);
+    if (drivenKmTo) matchStage.noOfKmDriven.$lte = Number(drivenKmTo);
   }
 
+  const basePipeline: any[] = [
+    { $match: matchStage },
+
+    {
+      $lookup: {
+        from: 'carmodels',
+        localField: 'carModelId',
+        foreignField: '_id',
+        as: 'carModel',
+      },
+    },
+    { $unwind: '$carModel' },
+
+    ...(modelYearFrom || modelYearTo
+      ? [{
+          $match: {
+            'carModel.modelYear': {
+              ...(modelYearFrom && { $gte: Number(modelYearFrom) }),
+              ...(modelYearTo && { $lte: Number(modelYearTo) }),
+            },
+          },
+        }]
+      : []),
+
+    {
+      $lookup: {
+        from: 'companies',
+        localField: 'companyId',
+        foreignField: '_id',
+        as: 'company',
+      },
+    },
+    { $unwind: '$company' },
+
+    {
+      $lookup: {
+        from: 'bids',
+        localField: '_id',
+        foreignField: 'carId',
+        as: 'bids',
+        pipeline: [{ $sort: { bidAmount: -1 } }, { $limit: 1 }],
+      },
+    },
+    {
+      $unwind: {
+        path: '$bids',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
+    {
+      $lookup: {
+        from: 'bids',
+        let: { carId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$carId', '$$carId'] } } },
+          { $count: 'totalBids' },
+        ],
+        as: 'bidsCount',
+      },
+    },
+
+    {
+      $addFields: {
+        totalBidCount: {
+          $ifNull: [{ $arrayElemAt: ['$bidsCount.totalBids', 0] }, 0],
+        },
+      },
+    },
+  ];
+
+  /* ---------- RESULT ---------- */
+  const result = await Car.aggregate([
+    ...basePipeline,
+    { $sort: { createdAt: -1 } },
+    { $skip: (Number(page) - 1) * Number(limit) },
+    { $limit: Number(limit) },
+  ]);
+
+  /* ---------- TOTAL COUNT ---------- */
+  const totalAgg = await Car.aggregate([
+    ...basePipeline,
+    { $count: 'total' },
+  ]);
+
+  const total = totalAgg[0]?.total || 0;
 
   return {
-    pagination, result: filterCar || []
+    pagination: {
+      total,
+      totalPage: Math.ceil(total / Number(limit)),
+      page: Number(page),
+      limit: Number(limit),
+    },
+    result,
   };
 };
-
 const buyCar = async (payload: any, user: TAuthUser) => {
   const { carId } = payload;
   const car = await Car.findById(carId);
