@@ -90,8 +90,14 @@ const getSubmitListing = async (query: Record<string, unknown>) => {
   const exprFilters: any[] = [];
   if (modelsFrom !== undefined) exprFilters.push({ $gte: ['$modelsFrom', Number(modelsFrom)] });
   if (modelsTo !== undefined) exprFilters.push({ $lte: ['$modelsTo', Number(modelsTo)] });
-  if (drivenKmFrom !== undefined) exprFilters.push({ $gte: ['$drivenKmFrom', Number(drivenKmFrom)] });
-  if (drivenKmTo !== undefined) exprFilters.push({ $lte: ['$drivenKmTo', Number(drivenKmTo)] });
+  if (drivenKmFrom !== undefined && drivenKmTo !== undefined) {
+    exprFilters.push({
+      $and: [
+        { $lte: ['$drivenKmFrom', Number(drivenKmTo)] }, // listing start <= query end
+        { $gte: ['$drivenKmTo', Number(drivenKmFrom)] }, // listing end >= query start
+      ],
+    });
+  }
 
   if (exprFilters.length > 0) match.$expr = { $and: exprFilters };
 
