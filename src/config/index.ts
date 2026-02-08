@@ -37,4 +37,5 @@ export default {
   default_password: process.env.DEFAULT_PASSWORD,
   cvr_key: process.env.CVR_KEY,
   car_key: process.env.CAR_KEY,
+  CLIENT_CORS_ORIGIN: process.env.CLIENT_CORS_ORIGIN,
 };
