@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { PipelineStage } from 'mongoose';
 import { USER_ROLE } from '../../constant';
 import { TAuthUser } from '../../interface/authUser';
-import AggregationQueryBuilder from '../../QueryBuilder/aggregationBuilder';
+// import AggregationQueryBuilder from '../../QueryBuilder/aggregationBuilder';
 import QueryBuilder from '../../QueryBuilder/queryBuilder';
 import generateUID from '../../utils/generateUid';
 import sendMail from '../../utils/sendMail';
@@ -41,29 +42,89 @@ const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
   });
   return result;
 };
+// /old code 
+// const getSubmitListing = async (query: Record<string, unknown>) => {
+//   const submitListingQuery = new AggregationQueryBuilder(query);
+//   const result = await submitListingQuery
+//     .customPipeline([
+//       {
+//         $match: {
+//           isOffer: false,
+//         },
+//       },
+//     ])
+//     .filter(['fuel', 'mark'])
+//     .rangeFilterForModel(['modelsFrom', 'modelsTo'])
+//     .rangeFilterForDriven(['drivenKmFrom', 'drivenKmTo'])
+//     .sort()
+//     .paginate()
+//     .execute(SubmitListing);
 
+//   const pagination = await submitListingQuery.countTotal(SubmitListing);
+
+//   return { pagination, result };
+// };
 const getSubmitListing = async (query: Record<string, unknown>) => {
-  const submitListingQuery = new AggregationQueryBuilder(query);
-  const result = await submitListingQuery
-    .customPipeline([
-      {
-        $match: {
-          isOffer: false,
-        },
+  const {
+    mark,
+    fuel,
+    modelsFrom,
+    modelsTo,
+    drivenKmFrom,
+    drivenKmTo,
+    page = 1,
+    limit = 10,
+  } = query;
+
+  const pageNumber = Number(page) || 1;
+  const limitNumber = Number(limit) || 10;
+  const skip = (pageNumber - 1) * limitNumber;
+
+  // Build match object
+  const match: Record<string, any> = {};
+
+  if (mark) match.mark = mark;
+  if (fuel) match.fuel = { $in: [fuel] };
+
+  // Range filters using $expr
+  const exprFilters: any[] = [];
+  if (modelsFrom !== undefined) exprFilters.push({ $gte: ['$modelsFrom', Number(modelsFrom)] });
+  if (modelsTo !== undefined) exprFilters.push({ $lte: ['$modelsTo', Number(modelsTo)] });
+  if (drivenKmFrom !== undefined) exprFilters.push({ $gte: ['$drivenKmFrom', Number(drivenKmFrom)] });
+  if (drivenKmTo !== undefined) exprFilters.push({ $lte: ['$drivenKmTo', Number(drivenKmTo)] });
+
+  if (exprFilters.length > 0) match.$expr = { $and: exprFilters };
+
+  // Type-safe pipeline
+  const pipeline: PipelineStage[] = [
+    { $match: match } as PipelineStage.Match,
+    {
+      $facet: {
+        result: [
+          { $sort: { createdAt: -1 } },
+          { $skip: skip },
+          { $limit: limitNumber },
+        ],
+        totalCount: [{ $count: 'count' }],
       },
-    ])
-    .filter(['fuel', 'mark'])
-    .rangeFilterForModel(['modelsFrom', 'modelsTo'])
-    .rangeFilterForDriven(['drivenKmFrom', 'drivenKmTo'])
-    .sort()
-    .paginate()
-    .execute(SubmitListing);
+    } as PipelineStage.Facet,
+  ];
 
-  const pagination = await submitListingQuery.countTotal(SubmitListing);
+  const [data] = await SubmitListing.aggregate(pipeline);
 
-  return { pagination, result };
+  const total = data.totalCount[0]?.count || 0;
+  const totalPage = Math.ceil(total / limitNumber);
+
+  return {
+    pagination: {
+      total,
+      totalPage,
+      page: pageNumber,
+      limit: limitNumber,
+    },
+    result: data.result,
+  };
 };
-
 const getMySubmitListing = async (
   user: TAuthUser,
   query: Record<string, unknown>,
