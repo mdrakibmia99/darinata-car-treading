@@ -10,6 +10,8 @@ import { TSaleCar } from './saleCar.interface';
 import SaleCar from './saleCar.model';
 import sendNotification from '../../../socket/sendNotification';
 import { NOTIFICATION_TYPE } from '../notification/notification.interface';
+import User from '../user/user.model';
+import sendMail from '../../utils/sendMail';
 
 const updateContactPaper = async (
   payload: Partial<TSaleCar>,
@@ -57,6 +59,42 @@ const updateContactPaper = async (
   };
 
   await sendNotification(user, notification);
+  const receiverUser= await User.findById(receiverId);
+
+  if(receiverUser){
+    await sendMail({
+    email: user.email,
+    subject: 'Opdatering af købskontrakt',
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Købskontrakten er blevet opdateret</h2>
+        <p>Hej,</p>
+        <p>Købskontrakten for den pågældende bil er blevet opdateret.</p>
+        <p>Log venligst ind på din konto for at gennemgå de seneste ændringer.</p>
+        <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+        <br/>
+        <p>Med venlig hilsen</p>
+        <p>Supportteamet</p>
+      </div>
+    `,
+  });
+    await sendMail({
+    email: receiverUser.email,
+    subject: 'Opdatering af købskontrakt',
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Købskontrakten er blevet opdateret</h2>
+        <p>Hej,</p>
+        <p>Købskontrakten for den pågældende bil er blevet opdateret.</p>
+        <p>Log venligst ind på din konto for at gennemgå de seneste ændringer.</p>
+        <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+        <br/>
+        <p>Med venlig hilsen</p>
+        <p>Supportteamet</p>
+      </div>
+    `,
+  });
+  }
 
   const result = await SaleCar.findByIdAndUpdate(saleCarId, payload, {
     new: true,

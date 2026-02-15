@@ -12,6 +12,8 @@ import sendNotification from '../../../socket/sendNotification';
 import { NOTIFICATION_TYPE } from '../notification/notification.interface';
 import { USER_ROLE } from '../../constant';
 import Notification from '../notification/notification.model';
+import User from '../user/user.model';
+import sendMail from '../../utils/sendMail';
 
 const createBid = async (payload: Partial<TBid>, user: TAuthUser) => {
   const car = await Car.findById(payload.carId);
@@ -45,6 +47,25 @@ const createBid = async (payload: Partial<TBid>, user: TAuthUser) => {
 
   await sendNotification(user, notification);
 
+  const getReceiverUser = await User.findOne({ _id: car.carOwner });
+if(getReceiverUser){
+    await sendMail({
+    email: getReceiverUser.email,
+    subject: 'Du har modtaget et bud på din bil',
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Du har modtaget et nyt bud</h2>
+        <p>Hej,</p>
+        <p>En bruger har afgivet et bud på din bilannonce.</p>
+        <p>Log ind på din konto for at se buddet og beslutte, om du vil acceptere eller afvise det.</p>
+        <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+        <br/>
+        <p>Med venlig hilsen</p>
+        <p>Supportteamet</p>
+      </div>
+    `,
+  });
+}
   // car.isSell = true;
   // await car.save();
   return result;

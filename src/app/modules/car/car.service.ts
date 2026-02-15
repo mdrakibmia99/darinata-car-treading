@@ -108,7 +108,21 @@ const carListing = async (payload: any) => {
       `,
       });
     }
-
+    await sendMail({
+      email: payload.email,
+      subject: 'Din bil er nu sat til salg',
+      html: `<div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Din bil er blevet oprettet til salg</h2>
+        <p>Hej,</p>
+        <p>Din bil er nu blevet sat til salg på vores platform.</p>
+        <p>Interesserede købere kan nu se din annonce og sende tilbud.</p>
+        <p>Du kan til enhver tid logge ind på din konto for at administrere din annonce.</p>
+        <br/>
+        <p>Med venlig hilsen</p>
+        <p>Supportteamet</p>
+      </div>
+    `,
+    });
     const createCarModel = await CarModel.create([carModel], { session });
     if (!createCarModel) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Car model creation failed');
@@ -479,6 +493,27 @@ const buyCar = async (payload: any, user: TAuthUser) => {
   };
 
   await sendNotification(user, notification);
+
+  const carOwner = await User.findById(car.carOwner);
+ if (carOwner) {
+  await sendMail({
+    email: carOwner.email,
+    subject: 'Din bil er blevet solgt',
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Din bil er blevet solgt</h2>
+        <p>Hej,</p>
+        <p>Vi vil gerne informere dig om, at din bil nu er blevet solgt via vores platform.</p>
+        <p>Du kan logge ind på din konto for at se detaljerne om salget.</p>
+        <p>Tak fordi du bruger vores platform.</p>
+        <br/>
+        <p>Med venlig hilsen</p>
+        <p>Supportteamet</p>
+      </div>
+    `,
+  });
+}
+
 
   return result;
 };

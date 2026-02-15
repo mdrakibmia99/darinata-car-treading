@@ -11,6 +11,8 @@ import { TOfferCar } from './offerCar.interface';
 import OfferCar from './offerCar.model';
 import sendNotification from '../../../socket/sendNotification';
 import { NOTIFICATION_TYPE } from '../notification/notification.interface';
+import sendMail from '../../utils/sendMail';
+import User from '../user/user.model';
 
 const createOfferCar = async (payload: Partial<TOfferCar>, user: TAuthUser) => {
   const findSubmitListing = await SubmitListing.findOne({
@@ -38,6 +40,16 @@ const createOfferCar = async (payload: Partial<TOfferCar>, user: TAuthUser) => {
   };
 
   await sendNotification(user, notification);
+  const getReceiverUser = await User.findOne({ _id: findSubmitListing.userId });
+  if (getReceiverUser) {
+    await sendMail({
+      email: getReceiverUser.email,
+      subject: 'Du har modtaget et tilbud på din bil',
+      html: `<h2>Du har modtaget et nyt tilbud</h2>`,
+    });
+  }
+
+
 
   return result;
 };
@@ -247,6 +259,41 @@ const updateOfferCarContactPaper = async (
   };
 
   await sendNotification(user, notification);
+const receiverUser = await User.findById(receiverId);
+    if(receiverUser){
+    await sendMail({
+    email: user.email,
+    subject: 'Opdatering af købskontrakt',
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Købskontrakten er blevet opdateret</h2>
+        <p>Hej,</p>
+        <p>Købskontrakten for den pågældende bil er blevet opdateret.</p>
+        <p>Log venligst ind på din konto for at gennemgå de seneste ændringer.</p>
+        <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+        <br/>
+        <p>Med venlig hilsen</p>
+        <p>Supportteamet</p>
+      </div>
+    `,
+  });
+    await sendMail({
+    email: receiverUser.email,
+    subject: 'Opdatering af købskontrakt',
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Købskontrakten er blevet opdateret</h2>
+        <p>Hej,</p>
+        <p>Købskontrakten for den pågældende bil er blevet opdateret.</p>
+        <p>Log venligst ind på din konto for at gennemgå de seneste ændringer.</p>
+        <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+        <br/>
+        <p>Med venlig hilsen</p>
+        <p>Supportteamet</p>
+      </div>
+    `,
+  });
+  }
 
   return result;
 };
