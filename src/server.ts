@@ -31,14 +31,14 @@ async function main() {
     console.log(colors.yellow('✅ Database connected successfully').bold);
 
     // Start Express server
-    server = app.listen(Number(config.port), () => {
+    server = app.listen(Number(config.port), "0.0.0.0", () => {
       console.log(
         colors.green(`App is listening on ${config.ip}:${config.port}`).bold,
       );
     });
 
     // Start Socket.IO server
-    socketServer.listen(Number(config.socket_port), () => {
+    socketServer.listen(Number(config.socket_port), "0.0.0.0", () => {
       console.log(
         colors.green(
           `✅ Socket server is running on ${config.ip}:${config.socket_port}`,
