@@ -33,7 +33,7 @@ async function main() {
     // Start Express server
     server = app.listen(Number(config.port), "0.0.0.0", () => {
       console.log(
-        colors.green(`App is listening on ${config.ip}:${config.port}`).bold,
+        colors.green(`---> Car trading server is listening on  : http://${config.ip}:${config.port}`).bold,
       );
     });
 
@@ -41,7 +41,7 @@ async function main() {
     socketServer.listen(Number(config.socket_port), "0.0.0.0", () => {
       console.log(
         colors.green(
-          `✅ Socket server is running on ${config.ip}:${config.socket_port}`,
+          `✅ Socket server is running on  : http://${config.ip}:${config.socket_port}`,
         ).bold,
       );
     });
