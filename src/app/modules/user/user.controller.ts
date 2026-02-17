@@ -3,6 +3,24 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserService } from './user.service';
 import { TAuthUser } from '../../interface/authUser';
+import { sendMail } from '../../utils/sendMail';
+
+export const sendTestMail = catchAsync(async (req, res) => {
+  const { email } = req.body;
+console.log("sent email =>>>>> ",email);
+  const result = await sendMail({
+    email,
+    subject: 'Test Mail',
+    html: 'Test mail',
+  });
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Email sent successfully',
+    data: result,
+  });
+});
 
 const getAllUsersList = catchAsync(async (req, res) => {
   const { data, pagination } = await UserService.getAllUsersList(req.query);
@@ -15,6 +33,8 @@ const getAllUsersList = catchAsync(async (req, res) => {
     data: data,
   });
 });
+
+
 
 const getUserRatio = catchAsync(async (req, res) => {
   const result = await UserService.getUserRatio(req.query.year as string);

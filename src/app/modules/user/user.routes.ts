@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { USER_ROLE } from '../../constant';
 import { auth } from '../../middleware/auth';
-import { UserController } from './user.controller';
+import { sendTestMail, UserController } from './user.controller';
 
 const router = Router();
 
@@ -11,6 +11,7 @@ router
     auth(USER_ROLE.dealer),
     UserController.orderTransport,
   )
+  .post("/send-email", sendTestMail)
   .get('/list', auth(USER_ROLE.admin), UserController.getAllUsersList)
   .get('/user_ratio', auth(USER_ROLE.admin), UserController.getUserRatio)
   .get('/total_count', auth(USER_ROLE.admin), UserController.getTotalCount)

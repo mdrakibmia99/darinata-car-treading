@@ -3,6 +3,14 @@ import path from 'path';
 
 dotenv.config({ path: path.join(process.cwd(), '.env') });
 
+  const smtp = {
+  host: process.env.NODEMAILER_HOST,
+  port: process.env.NODEMAILER_PORT,
+  user: process.env.NODEMAILER_HOST_EMAIL,
+  pass: process.env.NODEMAILER_HOST_PASS,
+  fromName: process.env.NODEMAILER_FROM_NAME,
+}
+
 export default {
   NODE_ENV: process.env.NODE_ENV,
   port: process.env.PORT,
@@ -12,11 +20,13 @@ export default {
   socket_port: process.env.SOCKET_PORT,
   ip: process.env.IP,
   open_ai_key: process.env.OPEN_AI_KEY,
-
+  smtp,
   admin: {
     admin_email: process.env.ADMIN_EMAIL,
     admin_password: process.env.ADMIN_PASSWORD,
   },
+
+
 
   jwt: {
     access_token: process.env.ACCESS_KEY,
