@@ -1,3 +1,6 @@
+const dns = require("dns");
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+
 import colors from 'colors';
 import { createServer, Server } from 'http';
 import mongoose from 'mongoose';
@@ -28,14 +31,14 @@ async function main() {
     console.log(colors.yellow('✅ Database connected successfully').bold);
 
     // Start Express server
-    server = app.listen(Number(config.port), "0.0.0.0", () => {
+    server = app.listen(Number(config.port), () => {
       console.log(
         colors.green(`App is listening on ${config.ip}:${config.port}`).bold,
       );
     });
 
     // Start Socket.IO server
-    socketServer.listen(Number(config.socket_port), "0.0.0.0", () => {
+    socketServer.listen(Number(config.socket_port), () => {
       console.log(
         colors.green(
           `✅ Socket server is running on ${config.ip}:${config.socket_port}`,
