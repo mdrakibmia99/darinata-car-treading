@@ -11,7 +11,7 @@ import SaleCar from './saleCar.model';
 import sendNotification from '../../../socket/sendNotification';
 import { NOTIFICATION_TYPE } from '../notification/notification.interface';
 import User from '../user/user.model';
-import sendMail from '../../utils/sendMail';
+import { sendMail } from '../../utils/sendMail';
 
 const updateContactPaper = async (
   payload: Partial<TSaleCar>,

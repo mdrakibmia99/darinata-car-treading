@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 import { TAuthUser } from '../../interface/authUser';
 import Conversation from './conversation.model';
 import Message from '../message/message.mode';
-import sendMail from '../../utils/sendMail';
+
 import User from '../user/user.model';
+import { sendMail } from '../../utils/sendMail';
 
 const createConversation = async (
   data: { receiverId: string },

@@ -5,10 +5,11 @@ import { TAuthUser } from '../../interface/authUser';
 // import AggregationQueryBuilder from '../../QueryBuilder/aggregationBuilder';
 import QueryBuilder from '../../QueryBuilder/queryBuilder';
 import generateUID from '../../utils/generateUid';
-import sendMail from '../../utils/sendMail';
+
 import User from '../user/user.model';
 import { TSubmitListing } from './submitListing.interface';
 import SubmitListing from './submitListing.model';
+import { sendMail } from '../../utils/sendMail';
 
 const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
   let createdUser;

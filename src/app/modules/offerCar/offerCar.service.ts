@@ -11,8 +11,9 @@ import { TOfferCar } from './offerCar.interface';
 import OfferCar from './offerCar.model';
 import sendNotification from '../../../socket/sendNotification';
 import { NOTIFICATION_TYPE } from '../notification/notification.interface';
-import sendMail from '../../utils/sendMail';
+
 import User from '../user/user.model';
+import { sendMail } from '../../utils/sendMail';
 
 const createOfferCar = async (payload: Partial<TOfferCar>, user: TAuthUser) => {
   const findSubmitListing = await SubmitListing.findOne({

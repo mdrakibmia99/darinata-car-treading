@@ -6,7 +6,6 @@ import { USER_ROLE } from '../../constant';
 import { TAuthUser } from '../../interface/authUser';
 import AggregationQueryBuilder from '../../QueryBuilder/aggregationBuilder';
 import AppError from '../../utils/AppError';
-import sendMail from '../../utils/sendMail';
 import { TBrandModel } from '../brandModel/brandModel.interface';
 import BrandModel from '../brandModel/brandModel.model';
 import CarModel from '../carModel/carModel.model';
@@ -19,6 +18,7 @@ import Car from './car.model';
 import generateUID from '../../utils/generateUid';
 import { NOTIFICATION_TYPE } from '../notification/notification.interface';
 import sendNotification from '../../../socket/sendNotification';
+import { sendMail } from '../../utils/sendMail';
 // import { cacheData, getCachedData } from '../../../redis';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

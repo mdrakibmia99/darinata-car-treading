@@ -4,7 +4,6 @@ import { months, USER_ROLE, USER_STATUS } from '../../constant';
 import { StatisticHelper } from '../../helper/staticsHelper';
 import { TAuthUser } from '../../interface/authUser';
 import AggregationQueryBuilder from '../../QueryBuilder/aggregationBuilder';
-import sendMail from '../../utils/sendMail';
 import CarModel from '../carModel/carModel.model';
 import OrderTransport from '../orderTransport/orderTransport.model';
 import SaleCar from '../saleCar/saleCar.model';
@@ -15,6 +14,7 @@ import Car from '../car/car.model';
 import SubmitListing from '../submitListing/submitListing.model';
 import OfferCar from '../offerCar/offerCar.model';
 import { orderTransportHtml } from '../../../shared/html/orderTransportHtml';
+import { sendMail } from '../../utils/sendMail';
 
 
 

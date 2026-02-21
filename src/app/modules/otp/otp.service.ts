@@ -2,8 +2,9 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import AppError from '../../utils/AppError';
-import sendMail from '../../utils/sendMail';
+
 import OTP from './otp.model';
+import { sendMail } from '../../utils/sendMail';
 
 const sendOTP = async (
   payload: any,
