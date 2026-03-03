@@ -445,8 +445,8 @@ const resendOtp = async (
         : decodedUser.user.email,
     html:
       payload.purpose === 'email-verification'
-        ? emailVerifyHtml('Email Verification', otp)
-        : forgotPasswordHtml('Forget Password', otp),
+        ? emailVerifyHtml('E-mailbekræftelse', otp)
+        : forgotPasswordHtml('Glemt adgangskode', otp),
   };
 
   const otpExpiryTime = parseInt(config.otp_expire_in as string) || 3;
