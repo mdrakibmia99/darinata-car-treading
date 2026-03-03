@@ -30,18 +30,24 @@ app.use(cookieParser());
 //   }),
 // );
 const allowedOrigins = (config.CLIENT_CORS_ORIGIN || "").split(",").map(o => o.trim());
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, true); // allow non-browser clients
+//       if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error('CORS policy violation'));
+//       }
+//     },
+//     credentials: true,
+//     optionsSuccessStatus: 200,
+//   })
+// );
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // allow non-browser clients
-      if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('CORS policy violation'));
-      }
-    },
+    origin: true,   // reflect request origin automatically
     credentials: true,
-    optionsSuccessStatus: 200,
   })
 );
 
