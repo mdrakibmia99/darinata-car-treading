@@ -495,11 +495,11 @@ const buyCar = async (payload: any, user: TAuthUser) => {
   await sendNotification(user, notification);
 
   const carOwner = await User.findById(car.carOwner);
- if (carOwner) {
-  await sendMail({
-    email: carOwner.email,
-    subject: 'Din bil er blevet solgt',
-    html: `
+  if (carOwner) {
+    await sendMail({
+      email: carOwner.email,
+      subject: 'Din bil er blevet solgt',
+      html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
         <h2>Din bil er blevet solgt</h2>
         <p>Hej,</p>
@@ -511,8 +511,8 @@ const buyCar = async (payload: any, user: TAuthUser) => {
         <p>Supportteamet</p>
       </div>
     `,
-  });
-}
+    });
+  }
 
 
   return result;
@@ -1017,6 +1017,9 @@ const deleteCar = async (carId: string) => {
 const addBrand = async (payload: TBrandModel) => {
   return await BrandModel.create(payload);
 };
+const updateBrand = async (brandId: string, payload: TBrandModel) => {
+  return await BrandModel.findByIdAndUpdate(brandId, payload, { new: true });
+};
 
 const getBrand = async () => {
   return await BrandModel.find({});
@@ -1029,6 +1032,7 @@ const deleteBrand = async (brandId: string) => {
 export const CarService = {
   getCVR,
   addBrand,
+  updateBrand,
   getBrand,
   buyCar,
   getCarInfo,

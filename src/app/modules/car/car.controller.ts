@@ -280,6 +280,22 @@ const addBrand = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const updateBrand = catchAsync(async (req, res) => {
+  
+
+  if (req.file) {
+    req.body.image = req.file.path;
+  }
+
+  const result = await CarService.updateBrand(req.params?.brandId, req.body);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: 'Car brand updated successfully',
+    data: result,
+  });
+});
 
 const getBrand = catchAsync(async (req, res) => {
   const result = await CarService.getBrand();
@@ -306,6 +322,7 @@ const deleteBrand = catchAsync(async (req, res) => {
 export const CarController = {
   getCVR,
   addBrand,
+  updateBrand,
   getCarInfo,
   getBrand,
   buyCar,

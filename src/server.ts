@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
 const dns = require("dns");
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 

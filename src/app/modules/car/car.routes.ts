@@ -27,6 +27,12 @@ router
     parseFormData,
     CarController.addBrand,
   )
+  .patch(
+    '/update_brand/:brandId',
+    upload.single("image"),
+    parseFormData,
+    CarController.updateBrand,
+  )
   .get('/get_brand', CarController.getBrand)
   .get(
     '/sale_car_list',

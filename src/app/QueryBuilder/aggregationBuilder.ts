@@ -236,7 +236,7 @@ class AggregationQueryBuilder {
         limit,
       };
     } catch (error) {
-      console.error('Error in total count aggregation:', error);
+      // console.error('Error in total count aggregation:', error);
       throw new Error('Failed to get total count');
     }
   }

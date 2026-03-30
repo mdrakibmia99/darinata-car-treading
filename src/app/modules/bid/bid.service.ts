@@ -176,7 +176,7 @@ const bidAction = async (payload: {
 
     await sendNotification(user, notification);
 
-    console.log(findBidCar);
+    // console.log(findBidCar);
     if (!updateCar) {
       throw new AppError(httpStatus.NOT_FOUND, 'Car not found');
     }
@@ -191,7 +191,7 @@ const bidAction = async (payload: {
       role: USER_ROLE.private_user,
       link: '/dashboard/my-bids',
     };
-    console.log(notification, 'notification');
+    // console.log(notification, 'notification');
 
     const user = {
       userId: findBidCar.userId,
