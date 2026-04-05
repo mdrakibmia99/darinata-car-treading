@@ -16,6 +16,8 @@ router
   .get('/user_ratio', auth(USER_ROLE.admin), UserController.getUserRatio)
   .get('/total_count', auth(USER_ROLE.admin), UserController.getTotalCount)
   .get('/customer_map', auth(USER_ROLE.admin), UserController.getCustomerMap)
+  .get('/dealer-email-received-status', auth(USER_ROLE.dealer), UserController.getDealerEmailReceivedStatus)
+  .patch('/dealer-email-received-status', auth(USER_ROLE.dealer), UserController.updateDealerEmailReceivedStatus)
   .put(
     '/update_term_and_privacy',
     auth(USER_ROLE.dealer, USER_ROLE.private_user),

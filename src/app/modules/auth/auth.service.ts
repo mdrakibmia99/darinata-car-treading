@@ -154,6 +154,7 @@ const verifyEmail = async (token: string, otp: { otp: number }) => {
       role: decodedUser.role,
       isUseTransport: decodedUser.isUseTransport,
       uuid: await generateUID(),
+      receiveEmail: decodedUser?.receiveEmail || false,
     };
 
     const user = await User.create([createUserData], { session });

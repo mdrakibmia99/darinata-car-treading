@@ -9,6 +9,7 @@ const registration = z.object({
         required_error: 'Confirm password is required',
       }),
       first_name: z.string({ required_error: 'first name is required' }),
+      receiveEmail: z.boolean().optional(),
       last_name: z.string({ required_error: 'last name is required' }),
       role: z.enum(['dealer', 'private_user'], {
         required_error: 'Role is required',

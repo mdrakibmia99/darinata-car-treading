@@ -67,6 +67,10 @@ export const userSchema = new mongoose.Schema<IUser, UserModel>(
       type: Boolean,
       default: false,
     },
+    receiveEmail: {
+      type: Boolean,
+      default: false,
+    },
     isTransportAdd: {
       type: Boolean,
       default: false,
@@ -83,6 +87,8 @@ export const userSchema = new mongoose.Schema<IUser, UserModel>(
   },
 );
 
+
+userSchema.index({ role: 1, receiveEmail: 1 });
 // query middlewares
 userSchema.pre('find', async function (next) {
   const query = this as any;
@@ -129,7 +135,7 @@ userSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this; // doc
   if (user.password) {
-    console.log(user.password,'user.password');
+    // console.log(user.password,'user.password');
     user.password = await bcrypt.hash(user.password, 10);
   }
 

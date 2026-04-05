@@ -23,6 +23,7 @@ export type IUser = {
   termsDate: string;
   isPrivacyAccepted: boolean;
   privacyDate: string;
+  receiveEmail: boolean;
 };
 
 export interface UserModel extends Model<IUser> {

@@ -1,13 +1,16 @@
+/* eslint-disable no-console */
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserService } from './user.service';
 import { TAuthUser } from '../../interface/authUser';
 import { sendMail } from '../../utils/sendMail';
+import User from './user.model';
+// import { USER_ROLE } from '../../constant';
 
 export const sendTestMail = catchAsync(async (req, res) => {
   const { email } = req.body;
-console.log("sent email =>>>>> ",email);
+  console.log("sent email =>>>>> ", email);
   const result = await sendMail({
     email,
     subject: 'Test Mail',
@@ -140,6 +143,30 @@ const privateUserTotalCar = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getDealerEmailReceivedStatus = catchAsync(async (req, res) => {
+ 
+  const result = await User.findById(req.user?.userId).select('receiveEmail');
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'dealer email received status fetched successfully',
+    data: result,
+  });
+});
+const updateDealerEmailReceivedStatus = catchAsync(async (req, res) => {
+
+  const result = await User.findByIdAndUpdate(
+    req.user?.userId,
+    { receiveEmail: req.body.receiveEmail },
+    { new: true, runValidators: true }
+  ).select('receiveEmail');
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'dealer email received status updated successfully',
+    data: result,
+  });
+});
 
 export const UserController = {
   getAllUsersList,
@@ -152,4 +179,6 @@ export const UserController = {
   privateUserDetails,
   updateTermAndPrivacy,
   privateUserTotalCar,
+  getDealerEmailReceivedStatus,
+  updateDealerEmailReceivedStatus
 };
