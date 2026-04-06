@@ -102,26 +102,30 @@ const carListing = async (payload: any) => {
 
       await sendMail({
         email: payload.email,
-        subject: 'Change Your Password Please',
+        subject: 'Skift venligst dit kodeord',
         html: `
-      <h1>Change Your Password Your Default Password is ${defaultPassword}</h1>
-      `,
+    <h1>Skift dit kodeord. Dit midlertidige kodeord er ${defaultPassword}</h1>
+  `,
       });
     }
     await sendMail({
       email: payload.email,
       subject: 'Din bil er nu sat til salg',
       html: `<div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Din bil er blevet oprettet til salg</h2>
-        <p>Hej,</p>
-        <p>Din bil er nu blevet sat til salg på vores platform.</p>
-        <p>Interesserede købere kan nu se din annonce og sende tilbud.</p>
-        <p>Du kan til enhver tid logge ind på din konto for at administrere din annonce.</p>
-        <br/>
-        <p>Med venlig hilsen</p>
-        <p>Supportteamet</p>
-      </div>
-    `,
+    <h2>Din bil er blevet oprettet til salg</h2>
+    <p>Hej ${payload.first_name} ${payload.last_name}</p>
+    <p>Din bil er nu blevet sat til salg på vores platform.</p>
+    <p>Interesserede købere kan nu se din annonce og sende tilbud.</p>
+    <p>Du kan til enhver tid logge ind på din konto for at administrere din annonce.</p>
+    <br/>
+    <p>Næste skridt vil fremgå på din konto, så du nemt kan følge handlen frem til afslutning.</p>
+    <p>Tak fordi du har brugt Engrosbasen.</p>
+    <br/>
+    <p>Med venlig hilsen</p>
+    <p>Engrosbasen</p>
+    <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
+  </div>
+  `,
     });
     const createCarModel = await CarModel.create([carModel], { session });
     if (!createCarModel) {
