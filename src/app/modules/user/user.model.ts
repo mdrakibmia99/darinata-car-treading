@@ -67,6 +67,7 @@ export const userSchema = new mongoose.Schema<IUser, UserModel>(
       type: Boolean,
       default: false,
     },
+    // this field for dealer 
     receiveEmail: {
       type: Boolean,
       default: false,
