@@ -19,12 +19,12 @@ router
   )
   .patch(
     '/update/:submitListingId',
-    auth(USER_ROLE.private_user),
+    auth(USER_ROLE.private_user, USER_ROLE.admin),
     SubmitListingController.updateSubmitListing,
   )
   .delete(
     '/delete/:submitListingId',
-    auth(USER_ROLE.private_user),
+    auth(USER_ROLE.private_user, USER_ROLE.admin),
     SubmitListingController.deleteSubmitListing,
   );
 
