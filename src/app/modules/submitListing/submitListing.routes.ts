@@ -11,7 +11,6 @@ router
     // auth(USER_ROLE.private_user),
     SubmitListingController.createSubmitListing,
   )
-  .get('/', SubmitListingController.getSubmitListing)
   .get(
     '/my_submit_listing',
     auth(USER_ROLE.private_user),
@@ -26,6 +25,7 @@ router
     '/delete/:submitListingId',
     auth(USER_ROLE.private_user, USER_ROLE.admin),
     SubmitListingController.deleteSubmitListing,
-  );
+  )
+  .get('/', SubmitListingController.getSubmitListing)
 
 export const SubmitListingRoutes = router;

@@ -49,24 +49,43 @@ const createBid = async (payload: Partial<TBid>, user: TAuthUser) => {
   await sendNotification(user, notification);
 
   const getReceiverUser = await User.findOne({ _id: car.carOwner });
-if(getReceiverUser){
+
+  if (getReceiverUser) {
     await sendMail({
-    email: getReceiverUser.email,
-    subject: 'Du har modtaget et bud på din bil',
-    html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Du har modtaget et nyt bud</h2>
-        <p>Hej,</p>
-        <p>En bruger har afgivet et bud på din bilannonce.</p>
-        <p>Log ind på din konto for at se buddet og beslutte, om du vil acceptere eller afvise det.</p>
-        <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
-        <br/>
-        <p>Med venlig hilsen</p>
-        <p>Supportteamet</p>
-      </div>
-    `,
-  });
-}
+      email: getReceiverUser.email,
+      subject: 'Du har modtaget et bud på din bil',
+      html: `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+    <h2>Du har modtaget et bud på din bil</h2>
+    
+    <p>Hej</p>
+    
+    <p>Du har netop modtaget et nyt bud på din bil på Engrosbasen.</p>
+    <p>En godkendt forhandler har gennemgået din annonce og afgivet et bud.</p>
+    
+    <p>Du kan nu logge ind for at se buddet og tage stilling.</p>
+    
+    
+    <p>Når du er logget ind, kan du:</p>
+    <ul>
+      <li>Se budbeløbet</li>
+      <li>Gennemgå forhandlerens oplysninger</li>
+      <li>Acceptere eller afvise buddet</li>
+    </ul>
+    
+    <p>Du er naturligvis ikke forpligtet til at acceptere et bud.</p>
+    
+    <p>Har du spørgsmål, er du altid velkommen til at kontakte os.</p>
+    
+    <br/>
+    
+    <p>Med venlig hilsen</p>
+    <p>Engrosbasen</p>
+    <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
+  </div>
+  `,
+    });
+  }
   // car.isSell = true;
   // await car.save();
   return result;
@@ -106,6 +125,12 @@ const getBidList = async (query: Record<string, unknown>, user: TAuthUser) => {
         },
       },
       { $unwind: { path: '$car', preserveNullAndEmptyArrays: true } },
+      // new add by rakib
+      {
+        $match: {
+          'car.isSell': false,
+        },
+      },
       {
         $lookup: {
           from: 'carmodels',

@@ -10,6 +10,7 @@ import User from '../user/user.model';
 import { TSubmitListing } from './submitListing.interface';
 import SubmitListing from './submitListing.model';
 import { sendMail } from '../../utils/sendMail';
+import { forDealerEmailTemplate } from '../../utils/dealerEmail';
 
 const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
   let createdUser;
@@ -28,12 +29,24 @@ const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
       uuid: await generateUID(),
     });
 
-    await sendMail({
+ await sendMail({
       email: payload.email,
-      subject: 'Welcome to Car Trading',
+      subject: 'Skift venligst dit kodeord',
       html: `
-        <h3>Change Your Password Your Default Password is ${defaultPassword}</h3>
-        `,
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Velkommen til Engrosbasen</h2>
+        <p>Hej ${payload.first_name},</p>
+        <p>Din konto er nu blevet oprettet på Engrosbasen.</p>
+        <p>Dit midlertidige kodeord er: <strong>${defaultPassword}</strong></p>
+        <p>Vi anbefaler, at du skifter dit kodeord hurtigst muligt efter din første login.</p>
+        <br/>
+        <p>Tak fordi du har brugt Engrosbasen.</p>
+        <br/>
+        <p>Med venlig hilsen</p>
+        <p>Engrosbasen</p>
+        <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
+      </div>
+      `,
     });
   }
 
@@ -41,7 +54,55 @@ const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
     ...payload,
     userId: payload.userId || createdUser?._id,
   });
-  return result;
+
+ const dealers = await User.find({ role: USER_ROLE.dealer,receiveEmail:true }).select("email");
+
+if (dealers.length > 0) {
+  const emailBody = `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+    
+    <h2>Kunde søger ${payload?.make || ""} ${payload?.model || ""} – potentiel handel</h2>
+
+    <p>Hej</p>
+
+    <p>En kunde har netop oprettet en forespørgsel på en bil via Engrosbasen.</p>
+
+    <h3>Kundens ønsker:</h3>
+    <p><strong>Mærke:</strong> ${payload?.make || ""}</p>
+    <p><strong>Model:</strong> ${payload?.model || ""}</p>
+    <p><strong>Budget:</strong> ${payload?.budget || ""}</p>
+    <p><strong>Årgang:</strong> ${payload?.year || ""}</p>
+    <p><strong>Kilometer:</strong> ${payload?.mileage || ""}</p>
+    <p><strong>Øvrige ønsker:</strong> ${payload?.comment || ""}</p>
+
+    <br/>
+
+    <p>
+      Hvis du har en tilsvarende bil på lager – eller mulighed for at skaffe en – 
+      kan du nu tage kontakt og potentielt indgå en handel.
+    </p>
+
+    <p>
+      Vi anbefaler hurtig respons, da kunder ofte er klar til at handle inden for kort tid.
+    </p>
+
+    <p>Har du spørgsmål, er du velkommen til at kontakte os.</p>
+
+    <br/>
+
+    <p>Med venlig hilsen</p>
+    <p>Engrosbasen</p>
+    <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
+
+  </div>
+  `;
+  const subject=`Kunde søger ${payload?.make || ''} ${payload?.model || ''} – potentiel handel`
+
+  await forDealerEmailTemplate(dealers, emailBody, subject);
+}
+
+return result;
+
 };
 // /old code 
 // const getSubmitListing = async (query: Record<string, unknown>) => {

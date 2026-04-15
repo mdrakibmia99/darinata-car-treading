@@ -59,43 +59,98 @@ const updateContactPaper = async (
   };
 
   await sendNotification(user, notification);
-  const receiverUser= await User.findById(receiverId);
 
-  if(receiverUser){
-    await sendMail({
-    email: user.email,
-    subject: 'Opdatering af købskontrakt',
-    html: `
+
+
+
+  // if (receiverUser) {
+  //   await sendMail({
+  //     email: user.email,
+  //     subject: 'Opdatering af købskontrakt',
+  //     html: `
+  //     <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+  //       <h2>Købskontrakten er blevet opdateret</h2>
+  //       <p>Hej,</p>
+  //       <p>Købskontrakten for den pågældende bil er blevet opdateret.</p>
+  //       <p>Log venligst ind på din konto for at gennemgå de seneste ændringer.</p>
+  //       <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+  //       <br/>
+  //          <p>Tak fordi du har brugt Engrosbasen.</p>
+  //       <br/>
+  //       <p>Med venlig hilsen</p>
+  //       <p>Engrosbasen</p>
+  //       <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
+  //     </div>
+  //   `,
+  //   });
+  //   await sendMail({
+  //     email: receiverUser.email,
+  //     subject: 'Opdatering af købskontrakt',
+  //     html: `
+  //     <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+  //       <h2>Købskontrakten er blevet opdateret</h2>
+  //       <p>Hej,</p>
+  //       <p>Købskontrakten for den pågældende bil er blevet opdateret.</p>
+  //       <p>Log venligst ind på din konto for at gennemgå de seneste ændringer.</p>
+  //       <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+  //       <br/>
+  //            <p>Tak fordi du har brugt Engrosbasen.</p>
+  //       <br/>
+  //       <p>Med venlig hilsen</p>
+  //       <p>Engrosbasen</p>
+  //       <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
+  //     </div>
+  //   `,
+  //   });
+  // }
+  const receiverUser = await User.findById(findSaleCar.userId);
+  if (user.role === USER_ROLE.dealer && receiverUser) {
+
+      await sendMail({
+        email: findSaleCar.userId,
+        subject: 'Købskontrakten er nu underskrevet',
+        html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Købskontrakten er blevet opdateret</h2>
-        <p>Hej,</p>
-        <p>Købskontrakten for den pågældende bil er blevet opdateret.</p>
-        <p>Log venligst ind på din konto for at gennemgå de seneste ændringer.</p>
-        <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+        <h2>Købskontrakten er nu underskrevet</h2>
+        <p>Hej</p>
+        <p>Vi vil informere dig om, at købskontrakten vedrørende din bil nu er underskrevet af forhandleren.</p>
+        <p>Handlen er dermed bekræftet, og kontrakten ligger klar på din konto.</p>
+        <p>Du kan logge ind her for at gennemgå dokumentet:</p>
+
+        <p>Vi anbefaler, at du gennemlæser kontrakten og følger de næste trin, som fremgår af din konto.</p>
+        <p>Har du spørgsmål til processen, er du naturligvis velkommen til at kontakte os.</p>
         <br/>
         <p>Med venlig hilsen</p>
-        <p>Supportteamet</p>
+        <p>Engrosbasen</p>
+        <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
       </div>
     `,
-  });
+      });
+    
+
+  }else if(user.role === USER_ROLE.private_user && receiverUser) {
     await sendMail({
-    email: receiverUser.email,
-    subject: 'Opdatering af købskontrakt',
-    html: `
+      email: receiverUser.email,
+      subject: 'Købskontrakten er nu underskrevet',
+      html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Købskontrakten er blevet opdateret</h2>
-        <p>Hej,</p>
-        <p>Købskontrakten for den pågældende bil er blevet opdateret.</p>
-        <p>Log venligst ind på din konto for at gennemgå de seneste ændringer.</p>
-        <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
+        <h2>Købskontrakten er nu underskrevet</h2>
+        <p>Hej</p>
+        <p>Tak for din underskrift. Købskontrakten vedrørende din bil er nu underskrevet og registreret på Engrosbasen.</p>
+        <p>Betalingen for bilen sker direkte mellem dig og den forhandler, der har købt bilen.</p>
+        <p>Du vil modtage beløbet direkte fra forhandleren i henhold til den indgåede aftale.</p>
+        <p><strong>Det er vigtigt, at du har modtaget betalingen, inden du udleverer bilen til køberen.</strong></p>
+        <p>Du kan logge ind på din konto for at se den underskrevne kontrakt samt forhandlerens oplysninger og følge den videre proces.</p>
+   
+        <p>Har du spørgsmål til handlen eller processen, er du naturligvis velkommen til at kontakte os.</p>
         <br/>
         <p>Med venlig hilsen</p>
-        <p>Supportteamet</p>
+        <p>Engrosbasen</p>
+        <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
       </div>
     `,
-  });
+    });
   }
-
   const result = await SaleCar.findByIdAndUpdate(saleCarId, payload, {
     new: true,
   });

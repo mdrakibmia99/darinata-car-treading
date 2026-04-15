@@ -19,6 +19,7 @@ import generateUID from '../../utils/generateUid';
 import { NOTIFICATION_TYPE } from '../notification/notification.interface';
 import sendNotification from '../../../socket/sendNotification';
 import { sendMail } from '../../utils/sendMail';
+import { forDealerEmailTemplate } from '../../utils/dealerEmail';
 // import { cacheData, getCachedData } from '../../../redis';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -127,6 +128,61 @@ const carListing = async (payload: any) => {
   </div>
   `,
     });
+
+    const dealers = await User.find({ role: USER_ROLE.dealer, receiveEmail: true }).select('email');
+    if (dealers.length > 0) {
+
+      const emailBody = `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+    <h2>Ny bil til salg – ${payload.brand} ${payload.model} er nu live</h2>
+    <p>Hej,</p>
+    <p>En ny bil er netop blevet oprettet på Engrosbasen og er nu tilgængelig for bud.</p>
+
+    <h3>Biloplysninger:</h3>
+    <table style="border-collapse: collapse; width: 100%;">
+      <tr style="background-color: #f2f2f2;">
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>Mærke</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${payload.brand}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>Model</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${payload.model}</td>
+      </tr>
+      <tr style="background-color: #f2f2f2;">
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>Årgang</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${payload.modelYear}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>Kilometer</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${payload.noOfKmDriven}</td>
+      </tr>
+      <tr style="background-color: #f2f2f2;">
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>Brændstof</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${payload.fuelType}</td>
+      </tr>
+
+      <tr style="background-color: #f2f2f2;">
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>Stand / kommentar</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${payload?.comment || ''}</td>
+      </tr>
+    </table>
+
+    <br/>
+    <p>Bilen er nu synlig for godkendte forhandlere, og du har mulighed for at gennemgå annoncen og afgive et bud direkte via platformen.</p>
+    <p>Vi anbefaler, at du reagerer hurtigt, da attraktive biler ofte får interesse og bud kort efter oprettelse.</p>
+    <p>Har du spørgsmål, er du velkommen til at kontakte os.</p>
+    <br/>
+    <p>Med venlig hilsen</p>
+    <p>Engrosbasen</p>
+    <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
+  </div>
+  `;
+      const subject = `Ny bil til salg – ${payload?.brand || ''} ${payload?.model || ''} er nu live`
+
+      await forDealerEmailTemplate(dealers, emailBody, subject);
+    }
+
+
     const createCarModel = await CarModel.create([carModel], { session });
     if (!createCarModel) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Car model creation failed');
@@ -505,14 +561,23 @@ const buyCar = async (payload: any, user: TAuthUser) => {
       subject: 'Din bil er blevet solgt',
       html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Din bil er blevet solgt</h2>
-        <p>Hej,</p>
-        <p>Vi vil gerne informere dig om, at din bil nu er blevet solgt via vores platform.</p>
-        <p>Du kan logge ind på din konto for at se detaljerne om salget.</p>
-        <p>Tak fordi du bruger vores platform.</p>
+        <h2>Tillykke – din bil er nu solgt!</h2>
+        <p>Hej </p>
+        <p>Tillykke – din bil er nu solgt via Engrosbasen.</p>
+        <p>En godkendt forhandler har accepteret handlen, og salget er registreret i systemet.</p>
+        <p><strong>Handlen er bindende, og bilen må derfor ikke sælges til anden side.</strong></p>
+        <p>Betalingen for bilen sker direkte mellem dig og køberen i forbindelse med overdragelsen. 
+           Det er din pligt at sikre, at betalingen er modtaget, inden du udleverer bilen til køberen.</p>
+        <p>Du kan nu logge ind på din konto for at se alle detaljer om salget, herunder forhandlerens 
+           oplysninger og den videre proces.</p>
+        
+        <br/>
+        <p>Næste skridt vil fremgå på din konto, så du nemt kan følge handlen frem til afslutning.</p>
+        <p>Tak fordi du har brugt Engrosbasen.</p>
         <br/>
         <p>Med venlig hilsen</p>
-        <p>Supportteamet</p>
+        <p>Engrosbasen</p>
+        <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
       </div>
     `,
     });
