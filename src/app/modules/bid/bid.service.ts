@@ -17,7 +17,7 @@ import { sendMail } from '../../utils/sendMail';
 
 
 const createBid = async (payload: Partial<TBid>, user: TAuthUser) => {
-  const car = await Car.findById(payload.carId);
+  const car = await Car.findById(payload.carId).populate('carModelId');
 
   if (!car) {
     throw new AppError(httpStatus.NOT_FOUND, 'Car not found');
@@ -39,7 +39,7 @@ const createBid = async (payload: Partial<TBid>, user: TAuthUser) => {
     senderId: user.userId,
     receiverId: car.carOwner,
     linkId: result._id as any,
-    message: `Du har modtaget et bud på ${Car.modelName}. Budbeløbet er ${payload.bidAmount}.`,
+    message: `Du har modtaget et bud på ${(car.carModelId as any)?.model || ''}. Budbeløbet er ${payload.bidAmount}.`,
     type: NOTIFICATION_TYPE.bid,
     role: user.role,
     count: unreadNotification + 1,
