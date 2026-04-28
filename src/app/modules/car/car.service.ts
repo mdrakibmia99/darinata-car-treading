@@ -101,13 +101,48 @@ const carListing = async (payload: any) => {
         { new: true, session },
       );
 
+      //     await sendMail({
+      //       email: payload.email,
+      //       subject: 'Skift venligst dit kodeord',
+      //       html: `
+      //   <h1>Skift dit kodeord. Dit midlertidige kodeord er ${defaultPassword}</h1>
+      // `,
+      //     });
       await sendMail({
         email: payload.email,
-        subject: 'Skift venligst dit kodeord',
+        subject: 'Din konto er oprettet – vælg din adgangskode',
         html: `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+    <h2>Din konto er oprettet</h2>
+    
+    <p>Hej</p>
+    
+    <p>Din konto på Engrosbasen er nu oprettet.</p>
+    <p>Af sikkerhedsmæssige årsager skal du oprette din personlige adgangskode, før du kan logge ind.</p>
+    
+    <p>Klik på linket herunder for at vælge din adgangskode:</p>
+    
+    <p>
+      <a href="https://engrosbasen.dk/" style="display:inline-block; padding:10px 15px; background:#007bff; color:#fff; text-decoration:none; border-radius:5px;">
+        Opret adgangskode
+      </a>
+    </p>
     <h1>Skift dit kodeord. Dit midlertidige kodeord er ${defaultPassword}</h1>
+    <p>Vi anbefaler, at du vælger en stærk adgangskode med både bogstaver og tal.</p>
+    
+    <p><strong>Bemærk:</strong> Hvis du ikke modtager fremtidige mails fra os (f.eks. ved bud eller kontraktopdateringer), kan de i enkelte tilfælde havne i din spam- eller uønsket post-mappe. Vi anbefaler, at du markerer info@engrosbasen.dk som en sikker afsender.</p>
+    
+    <p>Hvis du ikke selv har oprettet en konto, bedes du kontakte os med det samme.</p>
+    
+    <br/>
+    
+    <p>Med venlig hilsen</p>
+    <p>Engrosbasen</p>
+    <p><a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a></p>
+  </div>
   `,
       });
+
     }
     await sendMail({
       email: payload.email,
