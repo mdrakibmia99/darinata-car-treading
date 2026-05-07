@@ -144,8 +144,9 @@ const carListing = async (payload: any) => {
       });
 
     }
+    const user = await User.findById(payload.userId || createdUser?.[0]._id);
     await sendMail({
-      email: payload.email,
+      email: user?.email || payload.email,
       subject: 'Din bil er nu sat til salg',
       html: `<div style="font-family: Arial, sans-serif; line-height: 1.6;">
     <h2>Din bil er blevet oprettet til salg</h2>
