@@ -35,7 +35,7 @@ const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
       html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
         <h2>Velkommen til Engrosbasen</h2>
-        <p>Hej ${payload.first_name},</p>
+        <p>Hej</p>
         <p>Din konto er nu blevet oprettet på Engrosbasen.</p>
         <p>Dit midlertidige kodeord er: <strong>${defaultPassword}</strong></p>
         <p>Vi anbefaler, at du skifter dit kodeord hurtigst muligt efter din første login.</p>

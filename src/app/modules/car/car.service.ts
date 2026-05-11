@@ -150,7 +150,7 @@ const carListing = async (payload: any) => {
       subject: 'Din bil er nu sat til salg',
       html: `<div style="font-family: Arial, sans-serif; line-height: 1.6;">
     <h2>Din bil er blevet oprettet til salg</h2>
-    <p>Hej ${payload.first_name} ${payload.last_name}</p>
+    <p>Hej</p>
     <p>Din bil er nu blevet sat til salg på vores platform.</p>
     <p>Interesserede købere kan nu se din annonce og sende tilbud.</p>
     <p>Du kan til enhver tid logge ind på din konto for at administrere din annonce.</p>
@@ -171,7 +171,7 @@ const carListing = async (payload: any) => {
       const emailBody = `
   <div style="font-family: Arial, sans-serif; line-height: 1.6;">
     <h2>Ny bil til salg – ${payload.brand} ${payload.model} er nu live</h2>
-    <p>Hej,</p>
+    <p>Hej</p>
     <p>En ny bil er netop blevet oprettet på Engrosbasen og er nu tilgængelig for bud.</p>
 
     <h3>Biloplysninger:</h3>
