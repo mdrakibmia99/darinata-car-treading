@@ -11,6 +11,7 @@ import { TSubmitListing } from './submitListing.interface';
 import SubmitListing from './submitListing.model';
 import { sendMail } from '../../utils/sendMail';
 import { forDealerEmailTemplate } from '../../utils/dealerEmail';
+import Profile from '../profile/profile.model';
 
 const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
   let createdUser;
@@ -28,8 +29,20 @@ const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
       needPasswordChange: true,
       uuid: await generateUID(),
     });
+    const createProfileData = {
+      userId: createdUser._id,
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      phoneNumber: payload.phoneNumber,
+    };
+    const profile = await Profile.create(createProfileData);
+    await User.findByIdAndUpdate(
+      createdUser._id,
+      { profile: profile._id },
+      { new: true },
+    );
 
- await sendMail({
+    await sendMail({
       email: payload.email,
       subject: 'Skift venligst dit kodeord',
       html: `
@@ -55,10 +68,10 @@ const createSubmitListing = async (payload: Partial<TSubmitListing> | any) => {
     userId: payload.userId || createdUser?._id,
   });
 
- const dealers = await User.find({ role: USER_ROLE.dealer,receiveEmail:true }).select("email");
+  const dealers = await User.find({ role: USER_ROLE.dealer, receiveEmail: true }).select("email");
 
-if (dealers.length > 0) {
-  const emailBody = `
+  if (dealers.length > 0) {
+    const emailBody = `
   <div style="font-family: Arial, sans-serif; line-height: 1.6;">
     
     <h2>Kunde søger ${payload?.make || ""} ${payload?.model || ""} – potentiel handel</h2>
@@ -96,12 +109,12 @@ if (dealers.length > 0) {
 
   </div>
   `;
-  const subject=`Kunde søger ${payload?.make || ''} ${payload?.model || ''} – potentiel handel`
+    const subject = `Kunde søger ${payload?.make || ''} ${payload?.model || ''} – potentiel handel`
 
-  await forDealerEmailTemplate(dealers, emailBody, subject);
-}
+    await forDealerEmailTemplate(dealers, emailBody, subject);
+  }
 
-return result;
+  return result;
 
 };
 // /old code 
@@ -152,7 +165,7 @@ const getSubmitListing = async (query: Record<string, unknown>) => {
   const exprFilters: any[] = [];
   // if (modelsFrom !== undefined) exprFilters.push({ $gte: ['$modelsFrom', Number(modelsFrom)] });
   // if (modelsTo !== undefined) exprFilters.push({ $lte: ['$modelsTo', Number(modelsTo)] });
-   if (modelsFrom !== undefined && modelsTo !== undefined) {
+  if (modelsFrom !== undefined && modelsTo !== undefined) {
     exprFilters.push({
       $and: [
         { $lte: ['$modelsFrom', Number(modelsTo)] }, // listing start <= query end
