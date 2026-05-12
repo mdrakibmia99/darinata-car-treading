@@ -5,8 +5,8 @@ export const emailVerifyHtml = (
   otp: number,
   expiresIn: string = '3 minutes',
 ) => {
-  return `<!doctype html>
-<html lang="en">
+ return `<!doctype html>
+<html lang="da">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,7 +17,7 @@ export const emailVerifyHtml = (
   </head>
   <body>
     <div class="preheader">
-      Verify your email address to complete your registration.
+      Bekræft din e-mailadresse for at fuldføre din registrering.
     </div>
     <div class="email-container">
       <!-- Header -->
@@ -26,35 +26,39 @@ export const emailVerifyHtml = (
           src="https://image.similarpng.com/file/similarpng/very-thumbnail/2020/05/Solutions-website-logo-png.png"
           alt="The Car Treading Logo"
         />
-        <h1>Email Verification</h1>
+        <h1>E-mailbekræftelse</h1>
       </div>
+
       <!-- Content -->
       <div class="email-content">
-        <h2>Hello!</h2>
+        <h2>Hej!</h2>
         <p>
-          Thank you for signing up with The Car Treading. Please verify your
-          email address by using the One Time Password (OTP) below:
+          Tak fordi du har tilmeldt dig The Car Treading. Bekræft venligst din
+          e-mailadresse ved at bruge engangskoden (OTP) nedenfor:
         </p>
+
         <span class="otp-code">${otp}</span>
+
         <p>
-          This OTP is valid for <strong>${expiresIn}</strong>. If you did not
-          request this, please ignore this email or contact our support.
+          Denne OTP er gyldig i <strong>${expiresIn}</strong>. Hvis du ikke
+          har anmodet om dette, kan du ignorere denne e-mail eller kontakte vores support.
         </p>
+
         <p style="text-align: center">
-          <a href="mailto:support@thelocalmargin.com" class="btn"
-            >Contact Support</a
-          >
+          <a href="mailto:support@thelocalmargin.com" class="btn">
+            Kontakt support
+          </a>
         </p>
-        <p>Best regards,<br />The Car Treading Team</p>
+
+        <p>Med venlig hilsen,<br />The Car Treading Team</p>
       </div>
+
       <!-- Footer -->
       <div class="email-footer">
-        &copy; ${new Date().getFullYear()} The Car Treading. All rights
-        reserved.
+        &copy; ${new Date().getFullYear()} The Car Treading. Alle rettigheder forbeholdes.
       </div>
     </div>
   </body>
 </html>
-
 `;
 };
