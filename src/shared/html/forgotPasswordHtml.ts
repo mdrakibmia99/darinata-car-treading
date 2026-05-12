@@ -58,7 +58,7 @@ export const forgotPasswordHtml = (title: string, otp: number) => {
         <p>
           Med venlig hilsen<br />
           <strong>Engrosbasen</strong><br />
-          www.engrosbasen.dk
+          <a href="https://www.engrosbasen.dk">www.engrosbasen.dk</a>
         </p>
       </div>
 

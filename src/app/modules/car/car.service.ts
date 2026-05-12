@@ -123,7 +123,7 @@ const carListing = async (payload: any) => {
     <p>Klik på linket herunder for at vælge din adgangskode:</p>
     
     <p>
-      <a href="https://engrosbasen.dk/" style="display:inline-block; padding:10px 15px; background:#007bff; color:#fff; text-decoration:none; border-radius:5px;">
+      <a href="https://engrosbasen.dk" style="display:inline-block; padding:10px 15px; background:#007bff; color:#fff; text-decoration:none; border-radius:5px;">
         Opret adgangskode
       </a>
     </p>

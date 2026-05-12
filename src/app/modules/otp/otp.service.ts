@@ -15,7 +15,7 @@ const sendOTP = async (
   otp?: number,
 ) => {
   const subject =
-    purpose === 'email-verification' ? 'Email Verification' : 'Forget Password';
+    purpose === 'email-verification' ? 'Emailbekræftelse' : 'Glemt adgangskode';
   if (receiverType === 'email') {
     const emailBody = {
       email: payload.email,
