@@ -110,7 +110,7 @@ const carListing = async (payload: any) => {
       //     });
       await sendMail({
         email: payload.email,
-        subject: 'Din konto er oprettet – vælg din adgangskode',
+        subject: 'Din konto er oprettet – Dit midlertidige kodeord',
         html: `
   <div style="font-family: Arial, sans-serif; line-height: 1.6;">
     <h2>Din konto er oprettet</h2>
