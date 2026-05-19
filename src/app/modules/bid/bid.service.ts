@@ -56,8 +56,6 @@ const createBid = async (payload: Partial<TBid>, user: TAuthUser) => {
       subject: 'Du har modtaget et bud på din bil',
       html: `
   <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-    <h2>Du har modtaget et bud på din bil</h2>
-    
     <p>Hej</p>
     
     <p>Du har netop modtaget et nyt bud på din bil på Engrosbasen.</p>

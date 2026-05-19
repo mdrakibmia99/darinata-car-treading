@@ -27,8 +27,7 @@ const createConversation = async (
       subject: 'Du har modtaget en ny besked',
       html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Du har modtaget en ny besked</h2>
-        <p>Hej,</p>
+        <p>Hej</p>
         <p>En forhandler har sendt dig en ny besked vedrørende din bil.</p>
         <p>Log venligst ind på din konto for at læse og besvare beskeden.</p>
         <p>Hvis du har spørgsmål, er du velkommen til at kontakte os.</p>
